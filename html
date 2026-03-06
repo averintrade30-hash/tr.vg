@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trust Connect · dApp Protocol v3.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #0f172a;
+      --primary: #3b82f6;
+      --primary-soft: rgba(59,130,246,0.15);
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(148,163,184,0.35);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 40px rgba(15,23,42,0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 40%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 20%, #60a5fa, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.8);
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .tag-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .pill-pill-primary {
+      border-color: rgba(59,130,246,0.8);
+      color: #bfdbfe;
+      background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(15,23,42,0.9));
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0, #22c55e);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.32);
+    }
+
+    .tag-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px dashed rgba(148,163,184,0.6);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    /* Top-right status */
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .header-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.88);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .header-status span {
+      font-size: 11px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 840px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .header-right {
+        align-items: flex-start;
+      }
+    }
+
+    .hero-heading {
+      font-size: clamp(32px, 5vw, 42px);
+      line-height: 1.05;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .hero-heading span {
+      color: #93c5fd;
+      font-style: italic;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 420px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      transition: all 0.16s ease-out;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg,#2563eb,#60a5fa);
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(37,99,235,0.6);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 35px rgba(37,99,235,0.8);
+    }
+
+    .btn-ghost {
+      border-color: rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.8);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(30,64,175,0.35);
+      border-color: rgba(129,140,248,0.8);
+    }
+
+    .hero-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .hero-meta span {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+
+    /* Hero right card (wallet connect mock) */
+    .hero-card {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.2), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(59,130,246,0.24), transparent 60%),
+                  rgba(15,23,42,0.96);
+      border-radius: 24px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148,163,184,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .hero-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .hero-card-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-card-body {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .hero-card-steps {
+      margin-bottom: 10px;
+      padding: 10px 10px 8px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .hero-card-steps-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .hero-card-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+
+    .hero-card-step-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .hero-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .hero-card-footer span strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    /* Diagnostic Tools section */
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .tool-card {
+      background: rgba(15,23,42,0.92);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 12px;
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.6);
+    }
+
+    .tool-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .tool-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .tool-tag {
+      font-size: 11px;
+      color: #bfdbfe;
+      background: rgba(37,99,235,0.18);
+      border-radius: 999px;
+      display: inline-flex;
+      padding: 3px 8px;
+      border: 1px solid rgba(59,130,246,0.6);
+    }
+
+    /* Core capabilities */
+    .core-cap {
+      margin-bottom: 32px;
+    }
+
+    .core-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 8px;
+    }
+
+    .core-scroll {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+      gap: 14px;
+    }
+
+    .feature-item {
+      border-radius: var(--radius-lg);
+      background: rgba(15,23,42,0.94);
+      border: 1px solid rgba(148,163,184,0.45);
+      padding: 12px 14px 11px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-index {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(148,163,184,0.7);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .feature-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Network Status */
+    .network {
+      margin-bottom: 30px;
+    }
+
+    .network-card {
+      background: rgba(15,23,42,0.96);
+      border-radius: 18px;
+      padding: 15px 16px 12px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 14px 35px rgba(15,23,42,0.8);
+    }
+
+    .network-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .network-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .network-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(52,211,153,0.6);
+      color: #bbf7d0;
+      background: rgba(15,23,42,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .network-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0, #22c55e);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
+    }
+
+    .network-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .metric {
+      min-width: 90px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+
+    .metric-value {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .metric-value span {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    .network-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 12px;
+    }
+
+    .network-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .network-row-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .network-status-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(52,211,153,0.6);
+      color: #bbf7d0;
+      background: rgba(6,78,59,0.4);
+    }
+
+    .network-status-pill.degraded {
+      border-color: rgba(248,113,113,0.7);
+      color: #fecaca;
+      background: rgba(127,29,29,0.4);
+    }
+
+    /* Issue resolution */
+    .issue {
+      margin-bottom: 24px;
+    }
+
+    .issue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+      gap: 14px;
+    }
+
+    .issue-card {
+      background: rgba(15,23,42,0.93);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 11px;
+      border: 1px solid rgba(148,163,184,0.38);
+    }
+
+    .issue-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .issue-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .issue-cta {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px dashed rgba(59,130,246,0.7);
+      color: #bfdbfe;
+      background: rgba(15,23,42,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Footer tags */
+    .footer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+
+    .footer-tags span {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+    }
+
+    .footer-copy {
+      color: rgba(148,163,184,0.9);
+    }
+
+    /* Modals (Connect Wallet & Bug Report) – статические */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.85);
+      display: none; /* включишь JS-ом при необходимости */
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(148,163,184,0.7);
+      box-shadow: 0 18px 50px rgba(15,23,42,0.9);
+      font-size: 13px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .wallet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .wallet-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      cursor: pointer;
+    }
+
+    .wallet-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .wallet-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .wallet-tag {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .modal-footer-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .modal-footer-text a {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+
+    /* Bug report modal (нижняя часть) */
+    .bug-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .bug-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      cursor: pointer;
+    }
+
+    .bug-pill.primary {
+      border-color: rgba(59,130,246,0.8);
+      color: #bfdbfe;
+      background: rgba(30,64,175,0.6);
+    }
+
+    .field-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .select-mock,
+    .textarea-mock {
+      width: 100%;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 8px;
+      min-height: 70px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .btn-sm-primary {
+      border-color: rgba(59,130,246,0.9);
+      background: linear-gradient(135deg,#2563eb,#60a5fa);
+      color: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">T</div>
+        <div class="brand-meta">
+          <div class="brand-title">Trust Connect</div>
+          <div class="tag-row">
+            <div class="pill">
+              <span class="pill-dot"></span>
+              Mainnet
+            </div>
+            <span class="tag-badge">dApp Protocol v3.2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span>Advanced Web3 toolkit for your wallet</span>
+        </div>
+        <div><span style="color:#9ca3af;">Status:</span> <span style="color:#bbf7d0;">Operational</span></div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="pill pill-pill-primary" style="margin-bottom:10px;">
+          <span class="pill-dot"></span>
+          Advanced Web3 toolkit
+        </div>
+        <h1 class="hero-heading">
+          Advanced <span>Web3</span> toolkit for your wallet
+        </h1>
+        <p class="hero-sub">
+          Diagnose issues, resolve stuck transactions, manage dApp connections and
+          optimize your on-chain experience.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Connect Wallet</a>
+          <a href="#" class="btn btn-ghost">Run Diagnostics</a>
+        </div>
+
+        <div class="hero-meta">
+          <span>Audited</span>
+          <span>Non-custodial</span>
+          <span>Open-source</span>
+        </div>
+      </div>
+
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <div>
+            <div class="hero-card-title">Wallet Session</div>
+            <div style="font-size:11px;color:var(--muted);">WalletConnect v2.0 · Secure</div>
+          </div>
+          <div class="hero-card-badge">Live Diagnostics</div>
+        </div>
+
+        <div class="hero-card-body">
+          Establishing secure session via WalletConnect protocol...
+        </div>
+
+        <div class="hero-card-steps">
+          <div class="hero-card-steps-title">Connection steps</div>
+          <div class="hero-card-step">
+            <div class="hero-card-step-dot">1</div>
+            <span>Initializing session</span>
+          </div>
+          <div class="hero-card-step">
+            <div class="hero-card-step-dot">2</div>
+            <span>Resolving RPC endpoint</span>
+          </div>
+          <div class="hero-card-step">
+            <div class="hero-card-step-dot">3</div>
+            <span>Authenticating wallet</span>
+          </div>
+          <div class="hero-card-step">
+            <div class="hero-card-step-dot">4</div>
+            <span>Verifying signature</span>
+          </div>
+          <div class="hero-card-step" style="margin-top:4px;">
+            <div class="hero-card-step-dot" style="border-color:rgba(248,113,113,0.7);color:#fecaca;">!</div>
+            <span style="color:#fecaca;">Connection Failed · ERR_SESSION_TIMEOUT</span>
+          </div>
+        </div>
+
+        <div class="hero-card-footer">
+          <span>
+            Attempt <strong>3 of 3</strong> (exhausted)
+          </span>
+          <span style="font-size:11px;">
+            Import manually with Secret Recovery Phrase
+          </span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Diagnostic Tools -->
+    <section>
+      <div class="section-title-row">
+        <div>
+          <div class="section-label">🛠 Diagnostic Tools</div>
+          <div class="section-sub">
+            Professional-grade utilities for wallet troubleshooting and optimization
+          </div>
+        </div>
+      </div>
+
+      <div class="tools-grid">
+        <article class="tool-card">
+          <div class="tool-name">Stuck Transaction Resolver</div>
+          <div class="tool-desc">
+            Identify and fix pending transactions with nonce conflicts or low gas prices.
+          </div>
+          <div class="tool-tag">Priority gas suggestion</div>
+        </article>
+
+        <article class="tool-card">
+          <div class="tool-name">dApp Session Inspector</div>
+          <div class="tool-desc">
+            Review active dApp connections, revoke permissions and clear unsafe sessions.
+          </div>
+          <div class="tool-tag">Session hygiene</div>
+        </article>
+
+        <article class="tool-card">
+          <div class="tool-name">RPC Health Check</div>
+          <div class="tool-desc">
+            Benchmark your current RPC provider and recommend optimal endpoints.
+          </div>
+          <div class="tool-tag">Latency &amp; reliability</div>
+        </article>
+
+        <article class="tool-card">
+          <div class="tool-name">Nonce &amp; State Sync</div>
+          <div class="tool-desc">
+            Re-sync on-chain account state to fix “wrong balance / nonce” issues.
+          </div>
+          <div class="tool-tag">Account recovery</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Core Capabilities -->
+    <section class="core-cap">
+      <div class="core-title-row">
+        <div>
+          <div class="section-label">⚡ Core Capabilities</div>
+        </div>
+        <div class="core-scroll">Scroll to explore all features</div>
+      </div>
+
+      <div class="feature-list">
+        <article class="feature-item">
+          <div class="feature-index">01</div>
+          <div class="feature-title">Deep Wallet Diagnostics</div>
+          <div class="feature-desc">
+            Run full-stack checks on your wallet’s connectivity, RPC health and dApp sessions.
+          </div>
+        </article>
+
+        <article class="feature-item">
+          <div class="feature-index">02</div>
+          <div class="feature-title">Automated Fixes</div>
+          <div class="feature-desc">
+            One-tap remediation flows for the most common issues without exposing your keys.
+          </div>
+        </article>
+
+        <article class="feature-item">
+          <div class="feature-index">03</div>
+          <div class="feature-title">Multi-chain Support</div>
+          <div class="feature-desc">
+            Works across major EVM and non-EVM networks with tailored checks per chain.
+          </div>
+        </article>
+
+        <article class="feature-item">
+          <div class="feature-index">04</div>
+          <div class="feature-title">Privacy-first Design</div>
+          <div class="feature-desc">
+            All diagnostics run client-side — no custody, no tracking, no centralized risk.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Network Status -->
+    <section class="network">
+      <div class="section-label">📡 Network Status</div>
+      <div class="section-sub" style="margin-bottom:10px;">
+        Real-time blockchain infrastructure monitoring
+      </div>
+
+      <div class="network-card">
+        <div class="network-header">
+          <div class="network-title">Infrastructure Health</div>
+          <div class="network-badge">
+            <span class="network-dot"></span>
+            Live
+          </div>
+        </div>
+
+        <div class="network-metrics">
+          <div class="metric">
+            <div class="metric-label">Uptime</div>
+            <div class="metric-value">99.9%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Latency</div>
+            <div class="metric-value">12ms</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">TX Today</div>
+            <div class="metric-value">847K</div>
+          </div>
+        </div>
+
+        <div class="network-rows">
+          <div class="network-row">
+            <div class="network-row-left">
+              <span>Ethereum RPC</span>
+            </div>
+            <div class="network-status-pill">Healthy</div>
+          </div>
+          <div class="network-row">
+            <div class="network-row-left">
+              <span>BSC Node</span>
+            </div>
+            <div class="network-status-pill">Healthy</div>
+          </div>
+          <div class="network-row">
+            <div class="network-row-left">
+              <span>Solana RPC</span>
+            </div>
+            <div class="network-status-pill degraded">Degraded</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Issue Resolution -->
+    <section class="issue">
+      <div class="section-title-row">
+        <div>
+          <div class="section-label">🔍 Issue Resolution</div>
+          <div class="section-sub">
+            One-tap solutions for the most common wallet problems
+          </div>
+        </div>
+      </div>
+
+      <div class="issue-grid">
+        <article class="issue-card">
+          <div class="issue-title">Pending / Stuck Tx</div>
+          <div class="issue-desc">
+            Bump gas, cancel or replace transactions with safe recommended settings.
+          </div>
+          <div class="issue-cta">Fix stuck transaction</div>
+        </article>
+
+        <article class="issue-card">
+          <div class="issue-title">Wrong Balance / Nonce</div>
+          <div class="issue-desc">
+            Force-refresh account state directly from trusted on-chain sources.
+          </div>
+          <div class="issue-cta">Sync account state</div>
+        </article>
+
+        <article class="issue-card">
+          <div class="issue-title">Suspicious dApp Session</div>
+          <div class="issue-desc">
+            Review permissions, revoke approvals, and terminate risky connections.
+          </div>
+          <div class="issue-cta">Inspect dApp sessions</div>
+        </article>
+
+        <article class="issue-card">
+          <div class="issue-title">Network Misconfig</div>
+          <div class="issue-desc">
+            Automatically update outdated RPC URLs, chain IDs and network metadata.
+          </div>
+          <div class="issue-cta">Repair network config</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-tags">
+        <span>Audited</span>
+        <span>Non-custodial</span>
+        <span>Open-source</span>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-links">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Docs</a>
+          <a href="#">Support</a>
+        </div>
+        <div class="footer-copy">
+          © 2025 Trust Connect · dApp Protocol v3.2
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Пример модалки "Connect wallet" (статично, скрыта) -->
+  <div class="modal-backdrop" id="connectWalletModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Connect wallet</div>
+      </div>
+      <div class="modal-sub">
+        Choose a wallet to connect to this dApp
+      </div>
+
+      <div class="wallet-list">
+        <div class="wallet-item">
+          <div class="wallet-meta">
+            <div class="wallet-name">Trust Wallet</div>
+            <div class="wallet-tag">Mobile · Browser Extension</div>
+          </div>
+          <button class="btn-sm btn-sm-primary">Select wallet</button>
+        </div>
+        <div class="wallet-item">
+          <div class="wallet-meta">
+            <div class="wallet-name">MetaMask</div>
+            <div class="wallet-tag">Browser Extension</div>
+          </div>
+          <button class="btn-sm">Select wallet</button>
+        </div>
+      </div>
+
+      <div class="modal-footer-text">
+        A signature may be required to prove ownership of wallet.  
+        <a href="#">Learn more</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Пример модалки "Send Report to Telegram" (статично, скрыта) -->
+  <div class="modal-backdrop" id="bugReportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Send Report to Telegram</div>
+      </div>
+
+      <div class="bug-types">
+        <div class="bug-pill primary">🐛 Bug Report</div>
+        <div class="bug-pill">✨ Feature Request</div>
+        <div class="bug-pill">⚠️ Technical Issue</div>
+        <div class="bug-pill">💬 Feedback</div>
+      </div>
+
+      <div style="margin-bottom:6px;">
+        <div class="field-label">Tool</div>
+        <div class="select-mock">
+          {{ selectedTool.n }}
+        </div>
+      </div>
+
+      <div style="margin-bottom:6px;">
+        <div class="field-label">Problem</div>
+        <div class="select-mock">
+          {{ selectedProblem.t }}
+        </div>
+      </div>
+
+      <div>
+        <div class="field-label">Details</div>
+        <div class="textarea-mock">
+          Describe what happened, what you expected and any error messages.
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-sm">Cancel</button>
+        <button class="btn-sm btn-sm-primary">Send Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Небольшой JS для примера (по желанию можно удалить) -->
+  <script>
+    // Пример: открыть модалку по клику на "Connect Wallet"
+    document.querySelectorAll('a.btn-primary').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const m = document.getElementById('connectWalletModal');
+        if (m) m.style.display = 'flex';
+      });
+    });
+
+    document.querySelectorAll('#connectWalletModal .btn-sm, #connectWalletModal').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target === el || e.target.classList.contains('btn-sm')) {
+          document.getElementById('connectWalletModal').style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
